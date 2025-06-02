@@ -4,9 +4,12 @@
 
 ## Description
 
-L’objectif de ce projet de réalité augmentée et intéractions hybrides est de s’occuper d'un petit animal qui apparaît dans une zone prédéfinie à chaque lancement de l’application.
-Pour s’occuper de cet animal, il faut le nourrir, lui donner à boire et le laver. On pourra également lui donner des jouets.
-Avec un déplacement via le doigt sur l’écran d’un objet en réalité augmentée, on peut donner à ce petit animal ce dont il a besoin. Le petit animal réagit ensuite selon son humeur ou ses besoins.
+L'objectif de ce projet est de concevoir une application en réalité augmentée avec des interactions hybrides permettant à l'utilisateur de s’occuper d’un petit animal virtuel dans son propre environnement physique. 
+
+A chaque lancement de l’application, une surface plane est détectée automatiquement afin d’y faire apparaître l’animal et ses accessoires.
+
+L’utilisateur peut interagir avec son compagnon en le nourrissant, en lui donnant à boire et en jouant avec lui via des gestes tactiles sur l’écran comme des glissements ou cliquements. L’animal réagi de manières expressive à ces intéractions selon ses besoins
+
 
 ## Build
 ### Prérequis
