@@ -8,7 +8,7 @@ L'objectif de ce projet est de concevoir une application en réalité augmentée
 
 A chaque lancement de l’application, une surface plane est détectée automatiquement afin d’y faire apparaître l’animal et ses accessoires.
 
-L’utilisateur peut interagir avec son compagnon en le nourrissant, en lui donnant à boire et en jouant avec lui via des gestes tactiles sur l’écran comme des glissements ou cliquements. L’animal réagi de manières expressive à ces intéractions selon ses besoins
+L’utilisateur peut interagir avec son compagnon en le nourrissant, en lui donnant à boire et en jouant avec lui via des gestes tactiles sur l’écran comme des glissements ou cliquements. L’animal réagi de manière expressive à ces intéractions selon ses besoins
 
 
 ## Build
