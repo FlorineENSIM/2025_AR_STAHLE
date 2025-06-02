@@ -3,17 +3,22 @@ using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
 using System.Collections;
 using Unity.Collections;
-using UnityEngine.UI; // Pour les UI
+using UnityEngine.UI;
 using TMPro;
-
 
 public class PlaneFilter : MonoBehaviour
 {
     public ARPlaneManager planeManager;
     public GameObject objectToPlace;
-    public Canvas canvasUI;
-    public TextMeshProUGUI messageText;
     public GameObject fruitButton;
+    public GameObject prefabBanana;
+    public GameObject prefabCheese;
+    public GameObject prefabWatermelon;
+
+    public Canvas worldSpaceCanvas; // Canvas en mode World Space, collé à la caméra
+    public Transform fruitSpawnAnchor; // Un GameObject positionné en bas-centre de la caméra (voir instructions Unity)
+
+    public TextMeshProUGUI messageText;
 
     [Tooltip("Tolérance en mètres autour de la hauteur du premier plan détecté.")]
     public float heightTolerance = 0.05f;
@@ -43,7 +48,7 @@ public class PlaneFilter : MonoBehaviour
         {
             SpawnObjectOnPlane();
             readyToSpawn = false;
-            messageText.text = ""; // On efface le message
+            messageText.text = "";
         }
     }
 
@@ -101,10 +106,17 @@ public class PlaneFilter : MonoBehaviour
 
     private IEnumerator FinalizeTrackingAfterDelay(ARPlane plane, float area)
     {
-        yield return new WaitForSeconds(1f); // Stabilisation
+        yield return new WaitForSeconds(1f);
 
         planeManager.enabled = false;
-        messageText.text = $"Zone détectée : {area:F2} m²\nTouchez l’écran pour faire apparaître l’animal.";
+
+        var meshVisualizer = plane.GetComponent<ARPlaneMeshVisualizer>();
+        if (meshVisualizer != null) meshVisualizer.enabled = false;
+
+        var renderer = plane.GetComponent<MeshRenderer>();
+        if (renderer != null) renderer.enabled = true;
+
+        messageText.text = $"Zone détectée : {area:F2} m²\nTouchez l'écran pour faire apparaître l'animal.";
         readyToSpawn = true;
     }
 
@@ -112,13 +124,23 @@ public class PlaneFilter : MonoBehaviour
     {
         if (objectToPlace != null && selectedPlane != null)
         {
-            Vector3 spawnPosition = selectedPlane.center;
-            Quaternion rotation = Quaternion.Euler(0, selectedPlane.transform.eulerAngles.y + 180f, 0); // rotation 180°
+            Vector3 spawnPosition = selectedPlane.transform.position + new Vector3(0f, 0.05f, 0f);
+            Quaternion rotation = Quaternion.Euler(0, selectedPlane.transform.eulerAngles.y + 180f, 0);
             GameObject obj = Instantiate(objectToPlace, spawnPosition, rotation);
-            obj.transform.localScale *= 0.5f; // réduction à 50% de la taille d’origine
+            obj.transform.localScale *= 0.5f;
+
+            if (fruitButton != null)
+                fruitButton.SetActive(true);
         }
-        if (fruitButton != null)
-            fruitButton.SetActive(true);
+    }
+
+    public void OnClickFruitButton()
+    {
+        if (fruitSpawnAnchor == null) return;
+
+        GameObject banana = Instantiate(prefabBanana, fruitSpawnAnchor.position + new Vector3(-0.3f, 0, 0), Quaternion.identity, worldSpaceCanvas.transform);
+        GameObject cheese = Instantiate(prefabCheese, fruitSpawnAnchor.position, Quaternion.identity, worldSpaceCanvas.transform);
+        GameObject watermelon = Instantiate(prefabWatermelon, fruitSpawnAnchor.position + new Vector3(0.3f, 0, 0), Quaternion.identity, worldSpaceCanvas.transform);
     }
 
     float CalculatePolygonArea(NativeArray<Vector2> points)

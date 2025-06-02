@@ -3,7 +3,16 @@ guid: 657616d79aaa77b4c8782d81356a5662
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - planeManager: {instanceID: 0}
+  - objectToPlace: {instanceID: 0}
+  - fruitButton: {instanceID: 0}
+  - prefabBanana: {fileID: 7080878056979078868, guid: 91f4bc3f1371cab49978b234e0c649a9, type: 3}
+  - prefabCheese: {fileID: 1950564034006017692, guid: dd2849f7de51c1a4095e3b4295807679, type: 3}
+  - prefabWatermelon: {fileID: 7308954370961988165, guid: a15b5787002931445911d5f9b0abe9c9, type: 3}
+  - worldSpaceCanvas: {instanceID: 0}
+  - fruitSpawnAnchor: {instanceID: 0}
+  - messageText: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
