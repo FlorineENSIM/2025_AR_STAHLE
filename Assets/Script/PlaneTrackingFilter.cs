@@ -14,6 +14,7 @@ public class PlaneFilter : MonoBehaviour
     public GameObject prefabBanana;
     public GameObject prefabCheese;
     public GameObject prefabWatermelon;
+    public Animator animalAnimator;
 
     public Canvas worldSpaceCanvas; // Canvas en mode World Space, collé à la caméra
     public Transform fruitSpawnAnchor; // Un GameObject positionné en bas-centre de la caméra (voir instructions Unity)
@@ -31,6 +32,7 @@ public class PlaneFilter : MonoBehaviour
     private ARPlane selectedPlane;
     private bool trackingCompleted = false;
     private bool readyToSpawn = false;
+    private GameObject spawnedAnimal;
 
     void OnEnable()
     {
@@ -121,27 +123,54 @@ public class PlaneFilter : MonoBehaviour
     }
 
     private void SpawnObjectOnPlane()
+{
+    if (objectToPlace != null && selectedPlane != null)
     {
-        if (objectToPlace != null && selectedPlane != null)
-        {
-            Vector3 spawnPosition = selectedPlane.transform.position + new Vector3(0f, 0.05f, 0f);
-            Quaternion rotation = Quaternion.Euler(0, selectedPlane.transform.eulerAngles.y + 180f, 0);
-            GameObject obj = Instantiate(objectToPlace, spawnPosition, rotation);
-            obj.transform.localScale *= 0.5f;
+        Vector3 spawnPosition = selectedPlane.transform.position + new Vector3(0f, 0.05f, 0f);
+        Quaternion rotation = Quaternion.Euler(0, selectedPlane.transform.eulerAngles.y + 180f, 0);
 
-            if (fruitButton != null)
-                fruitButton.SetActive(true);
+        spawnedAnimal = Instantiate(objectToPlace, spawnPosition, rotation);
+        spawnedAnimal.transform.localScale *= 0.5f;
+
+        // S'assurer que l'Animator est bien assigné dans AnimalBehavior
+        var behavior = spawnedAnimal.GetComponent<AnimalBehavior>();
+        if (behavior != null && behavior.animator == null)
+        {
+            behavior.animator = spawnedAnimal.GetComponent<Animator>();
         }
+
+        if (fruitButton != null)
+            fruitButton.SetActive(true);
     }
+}
 
     public void OnClickFruitButton()
-    {
-        if (fruitSpawnAnchor == null) return;
+{
+    if (fruitSpawnAnchor == null || spawnedAnimal == null) return;
 
-        GameObject banana = Instantiate(prefabBanana, fruitSpawnAnchor.position + new Vector3(-0.3f, 0, 0), Quaternion.identity, worldSpaceCanvas.transform);
-        GameObject cheese = Instantiate(prefabCheese, fruitSpawnAnchor.position, Quaternion.identity, worldSpaceCanvas.transform);
-        GameObject watermelon = Instantiate(prefabWatermelon, fruitSpawnAnchor.position + new Vector3(0.3f, 0, 0), Quaternion.identity, worldSpaceCanvas.transform);
+    GameObject banana = Instantiate(prefabBanana, fruitSpawnAnchor.position + new Vector3(-0.3f, 0, 0), Quaternion.identity, worldSpaceCanvas.transform);
+    SetupFruit(banana, "Banane");
+
+    GameObject cheese = Instantiate(prefabCheese, fruitSpawnAnchor.position, Quaternion.identity, worldSpaceCanvas.transform);
+    SetupFruit(cheese, "Cheese");
+
+    GameObject watermelon = Instantiate(prefabWatermelon, fruitSpawnAnchor.position + new Vector3(0.3f, 0, 0), Quaternion.identity, worldSpaceCanvas.transform);
+    SetupFruit(watermelon, "Pasteque");
+}
+
+
+
+
+    private void SetupFruit(GameObject fruit, string fruitName)
+{
+    SwipeableFruit swipeScript = fruit.GetComponent<SwipeableFruit>();
+    if (swipeScript != null)
+    {
+        swipeScript.animal = spawnedAnimal.GetComponent<AnimalBehavior>();
+        swipeScript.fruitName = fruitName;
     }
+}
+
 
     float CalculatePolygonArea(NativeArray<Vector2> points)
     {
